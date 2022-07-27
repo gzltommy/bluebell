@@ -1,12 +1,14 @@
-app:
-  name: "bluebell"
-  mode: "dev"
-  port: 8081
-  version: "0.1.0.1"
+name: "bluebell"
+mode: "dev"
+port: 8081
+version: "0.1.0.1"
+limit_connection: 2000
+start_time: "2022-07-27"
+machine_id: 1
 
 log:
   level: "debug"
-  filename: "bluebell.log"
+  filename: "./logs/bluebell.log"
   max_siz: 200
   max_age: 30
   max_backups: 7

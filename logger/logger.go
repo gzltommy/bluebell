@@ -16,11 +16,10 @@ import (
 )
 
 var (
-	Log      *zap.Logger
-	SugarLog *zap.SugaredLogger
+	Log *zap.Logger
 )
 
-func Init(cfg *settings.LogConfig) error {
+func Init(cfg *settings.LogConfig, mode string) error {
 	l := new(zapcore.Level)
 	err := l.UnmarshalText([]byte(cfg.Level))
 	if err != nil {
@@ -28,13 +27,25 @@ func Init(cfg *settings.LogConfig) error {
 	}
 	encoder := getEncoder()
 	writeSyncer := getLogWriter(cfg)
-	core := zapcore.NewCore(encoder, writeSyncer, l)
+
+	var core zapcore.Core
+	if mode == "dev" {
+		// 进入开发模式，日志输出到终端
+		consoleEncoder := zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig())
+		core = zapcore.NewTee( // 多个输出
+			zapcore.NewCore(encoder, writeSyncer, l),                                     // 往日志文件里面写
+			zapcore.NewCore(consoleEncoder, zapcore.Lock(os.Stdout), zapcore.DebugLevel), // 终端输出
+		)
+	} else {
+		core = zapcore.NewCore(encoder, writeSyncer, l)
+	}
 
 	Log = zap.New(core, zap.AddCaller())
-	SugarLog = Log.Sugar()
 
 	// 替换 zap 库中全局的 logger
 	zap.ReplaceGlobals(Log)
+
+	zap.L().Info("init logger success")
 	return nil
 }
 
@@ -56,7 +67,7 @@ func getLogWriter(cfg *settings.LogConfig) zapcore.WriteSyncer {
 	return zapcore.AddSync(lumberJackLogger)
 }
 
-// GinLogger 接收 gin 框架默认的日志
+// GinLogger 接收gin框架默认的日志
 func GinLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
@@ -65,7 +76,7 @@ func GinLogger() gin.HandlerFunc {
 		c.Next()
 
 		cost := time.Since(start)
-		zap.L().Info(path,
+		Log.Info(path,
 			zap.Int("status", c.Writer.Status()),
 			zap.String("method", c.Request.Method),
 			zap.String("path", path),
@@ -78,7 +89,7 @@ func GinLogger() gin.HandlerFunc {
 	}
 }
 
-// GinRecovery recover 掉项目可能出现的 panic
+// GinRecovery recover掉项目可能出现的panic，并使用zap记录相关日志
 func GinRecovery(stack bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {
@@ -88,8 +99,7 @@ func GinRecovery(stack bool) gin.HandlerFunc {
 				var brokenPipe bool
 				if ne, ok := err.(*net.OpError); ok {
 					if se, ok := ne.Err.(*os.SyscallError); ok {
-						if strings.Contains(strings.ToLower(se.Error()), "broken pipe") ||
-							strings.Contains(strings.ToLower(se.Error()), "connection reset by peer") {
+						if strings.Contains(strings.ToLower(se.Error()), "broken pipe") || strings.Contains(strings.ToLower(se.Error()), "connection reset by peer") {
 							brokenPipe = true
 						}
 					}
@@ -97,7 +107,7 @@ func GinRecovery(stack bool) gin.HandlerFunc {
 
 				httpRequest, _ := httputil.DumpRequest(c.Request, false)
 				if brokenPipe {
-					zap.L().Error(c.Request.URL.Path,
+					Log.Error(c.Request.URL.Path,
 						zap.Any("error", err),
 						zap.String("request", string(httpRequest)),
 					)
@@ -108,13 +118,13 @@ func GinRecovery(stack bool) gin.HandlerFunc {
 				}
 
 				if stack {
-					zap.L().Error("[Recovery from panic]",
+					Log.Error("[Recovery from panic]",
 						zap.Any("error", err),
 						zap.String("request", string(httpRequest)),
 						zap.String("stack", string(debug.Stack())),
 					)
 				} else {
-					zap.L().Error("[Recovery from panic]",
+					Log.Error("[Recovery from panic]",
 						zap.Any("error", err),
 						zap.String("request", string(httpRequest)),
 					)

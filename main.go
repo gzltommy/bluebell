@@ -4,6 +4,7 @@ import (
 	"bluebell/dao/mysql"
 	"bluebell/dao/redis"
 	"bluebell/logger"
+	"bluebell/pkg/snowflake"
 	"bluebell/routes"
 	"bluebell/settings"
 	"context"
@@ -29,7 +30,7 @@ import (
 */
 
 func main() {
-	cfgFile := flag.String("f", "config.yaml", "指定配置文件路径")
+	cfgFile := flag.String("f", "./conf/config.yaml", "指定配置文件路径")
 
 	flag.Parse()
 
@@ -39,7 +40,7 @@ func main() {
 	}
 
 	//2.初始化日志
-	if err := logger.Init(settings.Cfg.Log); err != nil {
+	if err := logger.Init(settings.Cfg.Log, settings.Cfg.Mode); err != nil {
 		panic(fmt.Errorf("init logger failed,err:%v \n", err))
 	}
 	defer zap.L().Sync()
@@ -56,18 +57,24 @@ func main() {
 	}
 	defer redis.Close()
 
-	//5.注册路由
-	r := routes.Setup()
+	// 雪花算法生成分布式ID
+	if err := snowflake.Init(settings.Cfg.StartTime, settings.Cfg.MachineID); err != nil {
+		panic(fmt.Sprintf("init snowflake failed, err:%v\n", err))
+		return
+	}
+
+	// 注册路由
+	r := routes.SetupRouter()
 
 	//6.启动服务（优雅关机）
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%d", settings.Cfg.App.Port),
+		Addr:    fmt.Sprintf(":%d", settings.Cfg.Port),
 		Handler: r,
 	}
 
 	go func() {
 		// 开启一个 goroutine 启动服务
-		zap.L().Info("开始监听", zap.String("port", fmt.Sprintf(":%d", settings.Cfg.App.Port)))
+		zap.L().Info("开始监听", zap.String("port", fmt.Sprintf(":%d", settings.Cfg.Port)))
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("listen: %s\n", err)
 		}

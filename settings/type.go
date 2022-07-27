@@ -1,17 +1,17 @@
 package settings
 
 type Config struct {
-	App   *AppConfig   `mapstructure:"app"`
+	Name            string `mapstructure:"name"`
+	Mode            string `mapstructure:"mode"`
+	Version         string `mapstructure:"version"`
+	Port            int    `mapstructure:"port"`
+	LimitConnection int    `mapstructure:"limit_connection"`
+	StartTime       string `mapstructure:"start_time"`
+	MachineID       int    `mapstructure:"machine_id"`
+
 	Log   *LogConfig   `mapstructure:"log"`
 	MySQL *MySQLConfig `mapstructure:"mysql"`
 	Redis *RedisConfig `mapstructure:"redis"`
-}
-
-type AppConfig struct {
-	Name    string `mapstructure:"name"`
-	Mode    string `mapstructure:"mode"`
-	Version string `mapstructure:"version"`
-	Port    int    `mapstructure:"port"`
 }
 
 type LogConfig struct {
