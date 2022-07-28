@@ -106,9 +106,9 @@ func RefreshToken(aToken, rToken string) (newAToken, newRToken string, err error
 	return
 }
 
-func keyFunc(t *jwt.Token) (i interface{}, err error) {
+func keyFunc(t *jwt.Token) (interface{}, error) {
 	if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 		return nil, errors.New("token parse error")
 	}
-	return settings.Cfg.Auth.JwtSecret, nil
+	return []byte(settings.Cfg.Auth.JwtSecret), nil
 }
