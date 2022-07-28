@@ -13,9 +13,9 @@ func SetupRouter(mode string) *gin.Engine {
 	auth.Use(middleware.JwtAuthMiddleware())
 	{
 		// 用户
-		v1.POST("user/signup", controller.SignupHandler)
-		v1.POST("user/login", controller.LoginHandler)
-		auth.GET("user/refresh-token", controller.RefreshTokenHandler)
+		v1.POST("/user/signup", controller.SignupHandler)
+		v1.POST("/user/login", controller.LoginHandler)
+		auth.GET("/user/refresh-token", controller.RefreshTokenHandler)
 	}
 
 	return r
