@@ -24,6 +24,7 @@ func InsertUser(user *models.User) (error error) {
 }
 
 func Login(username, password string) (user *models.User, err error) {
+	user = new(models.User)
 	sqlStr := "select user_id, username, password from user where username = ?"
 	err = db.Get(user, sqlStr, username)
 	if err != nil {

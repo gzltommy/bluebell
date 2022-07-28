@@ -39,7 +39,10 @@ func GenToken(userID uint64, username string) (aToken, rToken string, err error)
 					Unix(),
 				Issuer: settings.Cfg.AppName, // 签发人
 			},
-		}).SignedString(settings.Cfg.Auth.JwtSecret)
+		}).SignedString([]byte(settings.Cfg.Auth.JwtSecret))
+	if err != nil {
+		return "", "", err
+	}
 
 	// refresh token 不需要存任何自定义数据
 	rToken, err = jwt.NewWithClaims(
@@ -47,7 +50,7 @@ func GenToken(userID uint64, username string) (aToken, rToken string, err error)
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 24 * 10).Unix(), // 过期时间
 			Issuer:    settings.Cfg.AppName,                       // 签发人
-		}).SignedString(settings.Cfg.Auth.JwtSecret)
+		}).SignedString([]byte(settings.Cfg.Auth.JwtSecret))
 	return
 }
 
@@ -65,7 +68,7 @@ func GenToken2(userID uint64, username string) (token string, err error) {
 					Unix(),
 				Issuer: settings.Cfg.AppName, // 签发人
 			},
-		}).SignedString(settings.Cfg.Auth.JwtSecret)
+		}).SignedString([]byte(settings.Cfg.Auth.JwtSecret))
 	return
 }
 
