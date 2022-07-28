@@ -77,20 +77,20 @@ func RefreshTokenHandler(c *gin.Context) {
 	// 这里假设 Token 放在 Header 的 Authorization 中，并使用 Bearer 开头
 	authHeader := c.Request.Header.Get("Authorization")
 	if authHeader == "" {
-		render.ResponseAbort(c, render.CodeInvalidToken, "请求头缺少 Auth Token")
+		render.ResponseError(c, render.CodeInvalidToken, "请求头缺少 Auth Token")
 		return
 	}
 	// 按空格分割
 	parts := strings.SplitN(authHeader, " ", 2)
 	if !(len(parts) == 2 && parts[0] == "Bearer") {
-		render.ResponseAbort(c, render.CodeInvalidToken, "Token 格式不对")
+		render.ResponseError(c, render.CodeInvalidToken, "Token 格式不对")
 		return
 	}
 
 	aToken, rToken, err := jwt.RefreshToken(parts[1], rt)
 	if err != nil {
 		zap.L().Error("RefreshTokenHandler failed", zap.Error(err))
-		render.ResponseAbort(c, render.CodeServerBusy)
+		render.ResponseError(c, render.CodeServerBusy)
 		return
 	}
 

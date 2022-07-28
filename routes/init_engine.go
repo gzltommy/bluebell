@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"bluebell/controller"
 	"bluebell/logger"
 	"bluebell/settings"
 	limit "github.com/aviddiviner/gin-limit"
@@ -53,6 +52,8 @@ func initEngine(mode string) *gin.Engine {
 			"msg":  "Method Not Allowed",
 		})
 	})
-	e.GET("/ping", controller.Pong)
+	e.GET("/ping", func(c *gin.Context) {
+		c.String(http.StatusOK, "pong")
+	})
 	return e
 }

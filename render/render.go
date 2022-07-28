@@ -17,7 +17,7 @@ func ResponseAbort(c *gin.Context, code int, msg ...string) {
 		Msg:  getCodeMsg(code, msg...),
 		Data: nil,
 	}
-	c.AbortWithStatusJSON(code, result)
+	c.AbortWithStatusJSON(http.StatusOK, result)
 }
 
 func ResponseError(c *gin.Context, code int, msg ...string) {
