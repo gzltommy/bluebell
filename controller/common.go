@@ -1,14 +1,28 @@
 package controller
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 const (
 	ContextUserIDKey = "user_id"
 )
 
-func Pong(c *gin.Context) {
-	c.String(http.StatusOK, "pong")
+var (
+	ErrorUserNotLogin = errors.New("user not login")
+)
+
+func getAuthUserID(c *gin.Context) (userID uint64, err error) {
+	_userID, ok := c.Get(ContextUserIDKey)
+	if !ok {
+		err = ErrorUserNotLogin
+		return
+	}
+	userID, ok = _userID.(uint64)
+	if !ok {
+		err = ErrorUserNotLogin
+		return
+	}
+	return
 }
