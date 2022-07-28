@@ -8,8 +8,8 @@ import (
 
 func SetupRouter(mode string) *gin.Engine {
 	r := initEngine(mode)
-	v1 := r.Group("/v1")
-	auth := r.Group("/v1")
+	v1 := r.Group("/api/v1")
+	auth := r.Group("/api/v1")
 	auth.Use(middleware.JwtAuthMiddleware())
 	{
 		// 用户
