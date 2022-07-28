@@ -1,10 +1,16 @@
-name: "bluebell"
+app_name: "bluebell"
+# dev/release/test
 mode: "dev"
 port: 8081
 version: "0.1.0.1"
 limit_connection: 2000
 start_time: "2022-07-27"
 machine_id: 1
+
+auth:
+  jwt_secret: "ssajfoi10"
+  # 单位 s
+  jwt_expire: 3600
 
 log:
   level: "debug"

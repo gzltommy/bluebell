@@ -1,7 +1,7 @@
 package settings
 
 type Config struct {
-	Name            string `mapstructure:"name"`
+	AppName         string `mapstructure:"app_name"`
 	Mode            string `mapstructure:"mode"`
 	Version         string `mapstructure:"version"`
 	Port            int    `mapstructure:"port"`
@@ -9,9 +9,15 @@ type Config struct {
 	StartTime       string `mapstructure:"start_time"`
 	MachineID       int    `mapstructure:"machine_id"`
 
+	Auth  *AuthConfig  `mapstructure:"auth"`
 	Log   *LogConfig   `mapstructure:"log"`
 	MySQL *MySQLConfig `mapstructure:"mysql"`
 	Redis *RedisConfig `mapstructure:"redis"`
+}
+
+type AuthConfig struct {
+	JwtSecret string `mapstructure:"jwt_secret"`
+	JwtExpire int64  `mapstructure:"jwt_expire"`
 }
 
 type LogConfig struct {

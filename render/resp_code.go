@@ -13,18 +13,27 @@ package render
  */
 
 const (
-	ErrorUndefined = -1
-	Succeed        = 0
+	CodeSucceed = 0
 
-	ErrParams = 10000
+	CodeErrParams    = 10000
+	CodeInvalidToken = 10001
 
-	UserExisted = 20000
+	CodeUserExisted   = 20000
+	CodeUserNotExit   = 20001
+	CodePasswordWrong = 20002
+
+	CodeServerBusy = 30000
 )
 
 var codeMsg = map[int]string{
-	ErrorUndefined: "Undefined error",
-	Succeed:        "Success",
+	CodeSucceed: "Success",
 
-	ErrParams:   "Error params",
-	UserExisted: "User existed",
+	CodeErrParams:    "Error params",
+	CodeInvalidToken: "Invalid token",
+
+	CodeUserExisted:   "User existed",
+	CodeUserNotExit:   "User not exit",
+	CodePasswordWrong: "Password wrong",
+
+	CodeServerBusy: "Server busy",
 }

@@ -12,7 +12,10 @@ import (
 	"time"
 )
 
-func initEngine() *gin.Engine {
+func initEngine(mode string) *gin.Engine {
+	if mode == gin.ReleaseMode {
+		gin.SetMode(gin.ReleaseMode) // 设置成发布模式
+	}
 	e := gin.New()
 	e.Use(logger.GinLogger(), logger.GinRecovery(true))
 	e.Use(cors.New(cors.Config{

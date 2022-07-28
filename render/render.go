@@ -1,7 +1,6 @@
 package render
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -12,27 +11,40 @@ type RespJsonData struct {
 	Data interface{} `json:"data,omitempty"` // omitempty 当 data 为空时,不展示这个字段
 }
 
-func AbortJson(c *gin.Context, code int, data interface{}, errHashV ...string) {
+func ResponseAbort(c *gin.Context, code int, msg ...string) {
 	result := &RespJsonData{
 		Code: code,
-		Msg:  getMessage(code, errHashV...),
-		Data: data,
+		Msg:  getCodeMsg(code, msg...),
+		Data: nil,
 	}
 	c.AbortWithStatusJSON(code, result)
 }
 
-func Json(c *gin.Context, code int, data interface{}, errHashV ...string) {
+func ResponseError(c *gin.Context, code int, msg ...string) {
 	result := &RespJsonData{
 		Code: code,
-		Msg:  getMessage(code, errHashV...),
+		Msg:  getCodeMsg(code, msg...),
+		Data: nil,
+	}
+	c.JSON(http.StatusOK, result)
+}
+
+func ResponseSuccess(c *gin.Context, data interface{}) {
+	result := &RespJsonData{
+		Code: CodeSucceed,
+		Msg:  getCodeMsg(CodeSucceed),
 		Data: data,
 	}
 	c.JSON(http.StatusOK, result)
 }
 
-func getMessage(code int, errHashV ...string) string {
-	if code == ErrorUndefined && len(errHashV) > 0 {
-		return fmt.Sprintf("undefined error.error code:%s", errHashV[0])
+func getCodeMsg(code int, msg ...string) string {
+	if len(msg) > 0 {
+		return msg[0]
 	}
-	return codeMsg[code]
+	if v, ok := codeMsg[code]; ok {
+		return v
+	} else {
+		return codeMsg[CodeServerBusy]
+	}
 }

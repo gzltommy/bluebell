@@ -3,13 +3,9 @@ package logic
 import (
 	"bluebell/dao/mysql"
 	"bluebell/models"
+	"bluebell/pkg/jwt"
 	"bluebell/pkg/snowflake"
 	"bluebell/utils"
-	"errors"
-)
-
-var (
-	ErrorUserExited = errors.New("user exited")
 )
 
 func SignUp(p *models.ParamSignUp) error {
@@ -30,4 +26,19 @@ func SignUp(p *models.ParamSignUp) error {
 
 	// 3. 插入数据库
 	return mysql.InsertUser(&user)
+}
+
+func Login(p *models.ParamLogin) (user *models.User, err error) {
+	user, err = mysql.Login(p.UserName, utils.EncryptPassword([]byte(p.Password)))
+	if err != nil {
+		return
+	}
+
+	// 生成 JWT
+	//return jwt.GenToken(user.UserID,user.UserName)
+	aToken, rToken, err := jwt.GenToken(user.UserID, user.UserName)
+	user.AccessToken = aToken
+	user.RefreshToken = rToken
+	return
+
 }
