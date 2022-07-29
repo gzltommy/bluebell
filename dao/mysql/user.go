@@ -17,14 +17,14 @@ func CheckUserExist(username string) (error error) {
 	return
 }
 
-func InsertUser(user *models.User) (error error) {
+func InsertUser(user *model.User) (error error) {
 	sqlStr := `insert into user(user_id,username,password) values(?,?,?)`
 	_, err := db.Exec(sqlStr, user.UserID, user.UserName, user.Password)
 	return err
 }
 
-func Login(username, password string) (user *models.User, err error) {
-	user = new(models.User)
+func Login(username, password string) (user *model.User, err error) {
+	user = new(model.User)
 	sqlStr := "select user_id, username, password from user where username = ?"
 	err = db.Get(user, sqlStr, username)
 	if err != nil {

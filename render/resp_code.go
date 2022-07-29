@@ -18,11 +18,14 @@ const (
 	CodeErrParams    = 10000
 	CodeInvalidToken = 10001
 
-	CodeUserExisted   = 20000
-	CodeUserNotExit   = 20001
-	CodePasswordWrong = 20002
+	CodeUserExisted        = 20000
+	CodeUserNotExit        = 20001
+	CodePasswordWrong      = 20002
+	CodeNotLogin           = 20003
+	CodeInvalidCommunityID = 20004
 
-	CodeServerBusy = 30000
+	CodeServerBusy  = 30000
+	CodeServerError = 30001
 )
 
 var codeMsg = map[int]string{
@@ -31,9 +34,12 @@ var codeMsg = map[int]string{
 	CodeErrParams:    "Error params",
 	CodeInvalidToken: "Invalid token",
 
-	CodeUserExisted:   "User existed",
-	CodeUserNotExit:   "User not exit",
-	CodePasswordWrong: "Password wrong",
+	CodeUserExisted:        "User existed",
+	CodeUserNotExit:        "User not exit",
+	CodePasswordWrong:      "Password wrong",
+	CodeNotLogin:           "Not login",
+	CodeInvalidCommunityID: "Invalid community id",
 
-	CodeServerBusy: "Server busy",
+	CodeServerBusy:  "Server busy",
+	CodeServerError: "Server error",
 }

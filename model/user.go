@@ -1,4 +1,4 @@
-package models
+package model
 
 type User struct {
 	UserID       uint64 `json:"user_id,string" db:"user_id"` // 指定json序列化/反序列化时使用小写user_id

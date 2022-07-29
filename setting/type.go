@@ -1,4 +1,4 @@
-package settings
+package setting
 
 type Config struct {
 	AppName         string `mapstructure:"app_name"`

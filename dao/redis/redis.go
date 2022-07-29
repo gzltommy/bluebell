@@ -1,17 +1,17 @@
 package redis
 
 import (
-	"bluebell/settings"
+	"bluebell/setting"
 	"fmt"
 	"github.com/go-redis/redis"
 )
 
-// 声明一个全局的 rdb 变量
-var rdb *redis.Client
+// 声明一个全局的 client 变量
+var client *redis.Client
 
 // Init 初始化连接
-func Init(cfg *settings.RedisConfig) error {
-	rdb = redis.NewClient(&redis.Options{
+func Init(cfg *setting.RedisConfig) error {
+	client = redis.NewClient(&redis.Options{
 		Addr: fmt.Sprintf("%s:%d",
 			cfg.Host,
 			cfg.Port,
@@ -21,7 +21,7 @@ func Init(cfg *settings.RedisConfig) error {
 		PoolSize: cfg.PoolSize,
 	})
 
-	_, err := rdb.Ping().Result()
+	_, err := client.Ping().Result()
 	if err != nil {
 		return err
 	}
@@ -29,5 +29,5 @@ func Init(cfg *settings.RedisConfig) error {
 }
 
 func Close() {
-	_ = rdb.Close()
+	_ = client.Close()
 }

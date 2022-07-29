@@ -3,7 +3,7 @@ package controller
 import (
 	"bluebell/dao/mysql"
 	"bluebell/logic"
-	"bluebell/models"
+	"bluebell/model"
 	"bluebell/pkg/jwt"
 	"bluebell/render"
 	"bluebell/utils"
@@ -16,7 +16,7 @@ import (
 
 func SignupHandler(c *gin.Context) {
 	// 1.参数校验
-	req := &models.ParamSignUp{}
+	req := &model.ParamSignUp{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		zap.L().Error("SignupHandler with invalid param", zap.Error(err))
 		render.ResponseError(c, render.CodeErrParams)
@@ -40,7 +40,7 @@ func SignupHandler(c *gin.Context) {
 
 func LoginHandler(c *gin.Context) {
 	// 1.参数校验
-	req := &models.ParamLogin{}
+	req := &model.ParamLogin{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		zap.L().Error("LoginHandler with invalid param", zap.Error(err))
 		render.ResponseError(c, render.CodeErrParams)

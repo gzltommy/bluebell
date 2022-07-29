@@ -2,13 +2,13 @@ package logic
 
 import (
 	"bluebell/dao/mysql"
-	"bluebell/models"
+	"bluebell/model"
 	"bluebell/pkg/jwt"
 	"bluebell/pkg/snowflake"
 	"bluebell/utils"
 )
 
-func SignUp(p *models.ParamSignUp) error {
+func SignUp(p *model.ParamSignUp) error {
 	// 1. 查看用户是否存在
 	if err := mysql.CheckUserExist(p.Username); err != nil {
 		return err
@@ -18,7 +18,7 @@ func SignUp(p *models.ParamSignUp) error {
 	uid := snowflake.GenID()
 
 	// 构造一个 User 实例
-	user := models.User{
+	user := model.User{
 		UserID:   uint64(uid),
 		UserName: p.Username,
 		Password: utils.EncryptPassword([]byte(p.Password)), // 对密码进行加密
@@ -28,7 +28,7 @@ func SignUp(p *models.ParamSignUp) error {
 	return mysql.InsertUser(&user)
 }
 
-func Login(p *models.ParamLogin) (user *models.User, err error) {
+func Login(p *model.ParamLogin) (user *model.User, err error) {
 	user, err = mysql.Login(p.UserName, utils.EncryptPassword([]byte(p.Password)))
 	if err != nil {
 		return

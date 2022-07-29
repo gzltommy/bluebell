@@ -12,7 +12,7 @@ var (
 	db *sqlx.DB
 )
 
-func Init(cfg *settings.MySQLConfig) error {
+func Init(cfg *setting.MySQLConfig) error {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True",
 		cfg.User,
 		cfg.Password,

@@ -34,7 +34,7 @@ func initEngine(mode string) *gin.Engine {
 	}))
 
 	e.Use(gzip.Gzip(gzip.DefaultCompression))
-	e.Use(limit.MaxAllowed(settings.Cfg.LimitConnection))
+	e.Use(limit.MaxAllowed(setting.Cfg.LimitConnection))
 
 	// 最大运行上传文件大小
 	e.MaxMultipartMemory = 1 << 30 // 1G

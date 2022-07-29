@@ -19,7 +19,7 @@ var (
 	Log *zap.Logger
 )
 
-func Init(cfg *settings.LogConfig, mode string) error {
+func Init(cfg *setting.LogConfig, mode string) error {
 	l := new(zapcore.Level)
 	err := l.UnmarshalText([]byte(cfg.Level))
 	if err != nil {
@@ -56,7 +56,7 @@ func getEncoder() zapcore.Encoder {
 	return zapcore.NewConsoleEncoder(encoderConfig)
 }
 
-func getLogWriter(cfg *settings.LogConfig) zapcore.WriteSyncer {
+func getLogWriter(cfg *setting.LogConfig) zapcore.WriteSyncer {
 	lumberJackLogger := &lumberjack.Logger{
 		Filename:   cfg.Filename,
 		MaxSize:    cfg.MaxSize,

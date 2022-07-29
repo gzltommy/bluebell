@@ -12,10 +12,24 @@ func SetupRouter(mode string) *gin.Engine {
 	auth := r.Group("/api/v1")
 	auth.Use(middleware.JwtAuthMiddleware())
 	{
-		// 用户
 		v1.POST("/user/signup", controller.SignupHandler)
 		v1.POST("/user/login", controller.LoginHandler)
 		auth.GET("/user/refresh-token", controller.RefreshTokenHandler)
+	}
+	{
+		v1.GET("/community", controller.CommunityHandler)
+		v1.GET("/community/:id", controller.CommunityDetailHandler)
+	}
+	{
+		auth.POST("/post/create", controller.CreatePostHandler)
+		//v1.GET("/post/:id", controller.PostDetailHandler) // 查询帖子详情
+		//v1.GET("/post/list", controller.PostListHandler)  // 分页展示帖子列表
+		//v1.GET("/posts2", controller.PostList2Handler)    // 根据时间或者分数排序分页展示帖子列表
+		//auth.POST("post/vote", controller.VoteHandler)    // 投票
+	}
+	{
+		//auth.POST("/comment", controller.CommentHandler)
+		//v1.GET("/comment", controller.CommentListHandler)
 	}
 
 	return r
