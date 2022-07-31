@@ -1,7 +1,7 @@
 package jwt
 
 import (
-	"bluebell/settings"
+	"bluebell/setting"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"time"

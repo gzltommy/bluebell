@@ -2,7 +2,7 @@ package routes
 
 import (
 	"bluebell/logger"
-	"bluebell/settings"
+	"bluebell/setting"
 	limit "github.com/aviddiviner/gin-limit"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"

@@ -6,7 +6,7 @@ import (
 	"bluebell/logger"
 	"bluebell/pkg/snowflake"
 	"bluebell/routes"
-	"bluebell/settings"
+	"bluebell/setting"
 	"context"
 	"flag"
 	"fmt"

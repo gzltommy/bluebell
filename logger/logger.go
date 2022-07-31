@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"bluebell/settings"
+	"bluebell/setting"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
