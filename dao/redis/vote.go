@@ -40,7 +40,7 @@ func VoteForPost(userID string, postID string, v float64) (err error) {
 	postTime := client.ZScore(KeyPostTimeZSet, postID).Val()
 	if float64(time.Now().Unix())-postTime > OneWeekInSeconds { // Unix()时间戳
 		// 不允许投票了
-		return ErrorVoteTimeExpire
+		return ErrorVoteTimeExpired
 	}
 	// 2、更新帖子的分数
 	// 2和3 需要放到一个pipeline事务中操作
@@ -50,7 +50,7 @@ func VoteForPost(userID string, postID string, v float64) (err error) {
 
 	// 更新：如果这一次投票的值和之前保存的值一致，就提示不允许重复投票
 	if v == ov {
-		return ErrVoteRepested
+		return ErrVoteRepeated
 	}
 	var op float64
 	if v > ov {
@@ -61,7 +61,7 @@ func VoteForPost(userID string, postID string, v float64) (err error) {
 	diffAbs := math.Abs(ov - v)                                                        // 计算两次投票的差值
 	pipeline := client.TxPipeline()                                                    // 事务操作
 	_, err = pipeline.ZIncrBy(KeyPostScoreZSet, VoteScore*diffAbs*op, postID).Result() // 更新分数
-	if ErrorVoteTimeExpire != nil {
+	if ErrorVoteTimeExpired != nil {
 		return err
 	}
 	// 3、记录用户为该帖子投票的数据
