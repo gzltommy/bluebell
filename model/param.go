@@ -25,8 +25,8 @@ type (
 	}
 
 	ParamPostList struct {
-		Page int64 `json:"page" form:"page"` // 页码
-		Size int64 `json:"size" form:"size"` // 每页数量
+		Page int `json:"page" form:"page"` // 页码
+		Size int `json:"size" form:"size"` // 每页数量
 	}
 
 	ParamPostList2 struct {
