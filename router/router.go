@@ -22,10 +22,10 @@ func SetupRouter(mode string) *gin.Engine {
 	}
 	{
 		auth.POST("/post/create", controller.CreatePostHandler)
-		v1.GET("/post/:id", controller.PostDetailHandler) // 查询帖子详情
-		v1.GET("/post/list", controller.PostListHandler)  // 分页展示帖子列表
-		v1.GET("/posts2", controller.PostList2Handler)    // 根据时间或者分数排序分页展示帖子列表
-		auth.POST("post/vote", controller.VoteHandler)    // 投票
+		v1.GET("/post/:id", controller.PostDetailHandler)  // 查询帖子详情
+		v1.GET("/post/list", controller.PostListHandler)   // 分页展示帖子列表
+		v1.GET("/post/list2", controller.PostList2Handler) // 根据时间或者分数排序分页展示帖子列表
+		auth.POST("post/vote", controller.VoteHandler)     // 投票
 	}
 	{
 		auth.POST("/comment", controller.CommentHandler)
