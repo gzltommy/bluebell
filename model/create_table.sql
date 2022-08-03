@@ -53,3 +53,39 @@ insert into `community`
 values ('3', '3', 'PUBG', '大吉大利，今晚吃鸡。', '2018-08-07 08:30:00', '2018-08-07 08:30:00');
 insert into `community`
 values ('4', '4', 'LOL', '欢迎来到英雄联盟!', '2016-01-01 08:00:00', '2016-01-01 08:00:00');
+
+drop table if exists `post`;
+create table `post`
+(
+    `id`           bigint(20)    not null auto_increment,
+    `post_id`      bigint(20)    not null comment '帖子id',
+    `title`        varchar(128)  not null comment '标题',
+    `content`      varchar(8192) not null comment '内容',
+    `author_id`    bigint(20)    not null comment '作者的用户id',
+    `community_id` bigint(20)    not null comment '所属社区',
+    `status`       tinyint(4)    not null default '1' comment '帖子状态',
+    `create_time`  timestamp     null     default current_timestamp comment '创建时间',
+    `update_time`  timestamp     null     default current_timestamp on update current_timestamp comment '更新时间',
+    primary key (`id`),
+    unique key `idx_post_id` (`post_id`),
+    key `idx_author_id` (`author_id`),
+    key `idx_community_id` (`community_id`)
+);
+
+
+drop table if exists `comment`;
+create table `comment`
+(
+    `id`          bigint(20)          not null auto_increment,
+    `comment_id`  bigint(20) unsigned not null,
+    `content`     text                not null,
+    `post_id`     bigint(20)          not null,
+    `author_id`   bigint(20)          not null,
+    `parent_id`   bigint(20)          not null default '0',
+    `status`      tinyint(3) unsigned not null default '1',
+    `create_time` timestamp           null     default current_timestamp,
+    `update_time` timestamp           null     default current_timestamp on update current_timestamp,
+    primary key (`id`),
+    unique key `idx_comment_id` (`comment_id`),
+    key `idx_author_id` (`author_id`)
+);

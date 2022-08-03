@@ -1,7 +1,7 @@
 package mysql
 
 import (
-	"bluebell/models"
+	"bluebell/model"
 	"database/sql"
 )
 
@@ -39,5 +39,12 @@ func Login(username, password string) (user *model.User, err error) {
 	if user.Password != password {
 		return nil, ErrorPasswordWrong
 	}
+	return
+}
+
+func GetUserByID(id uint64) (user *model.User, err error) {
+	user = new(model.User)
+	sqlStr := `select user_id, username from user where user_id = ?`
+	err = db.Get(user, sqlStr, id)
 	return
 }
