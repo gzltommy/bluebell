@@ -121,7 +121,7 @@ func GetPostListNew(p *model.ParamPostList2) (data []*model.ApiPostDetail, err e
 		// 查所有
 		data, err = GetPostList2(p)
 	} else {
-		// 根据社区id查询
+		// 根据社区 id 查询
 		data, err = GetCommunityPostList(p)
 	}
 	if err != nil {
@@ -185,7 +185,7 @@ func GetPostList2(p *model.ParamPostList2) (data []*model.ApiPostDetail, err err
 }
 
 func GetCommunityPostList(p *model.ParamPostList2) (data []*model.ApiPostDetail, err error) {
-	// 2、去redis查询id列表
+	// 2、去 redis 查询 id 列表
 	ids, err := redis.GetCommunityPostIDsInOrder(p)
 	if err != nil {
 		return

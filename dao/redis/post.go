@@ -28,7 +28,7 @@ func CreatePost(postID, userID uint64, title, summary string, communityID uint64
 		"comments": 0,
 	}
 
-	// 批量操作
+	// 事务 pipeline
 	pipeline := client.TxPipeline()
 	pipeline.ZAdd(votedKey, redis.Z{ // 作者默认投赞成票
 		Score:  1,
@@ -58,7 +58,7 @@ func getIDsFormKey(key string, page, size int64) ([]string, error) {
 }
 
 func GetPostIDsInOrder(p *model.ParamPostList2) ([]string, error) {
-	// 从redis获取id
+	// 从 redis 获取 id
 	// 1.根据用户请求中携带的order参数确定要查询的redis key
 	key := KeyPostTimeZSet           // 默认是时间
 	if p.Order == model.OrderScore { // 按照分数请求
@@ -76,7 +76,8 @@ func GetPostVoteData(ids []string) (data []int64, err error) {
 	//	v := client.ZCount(key, "1", "1").Val()
 	//	data = append(data, v)
 	//}
-	// 使用 pipeline一次发送多条命令减少RTT
+
+	// 使用 pipeline 一次发送多条命令减少 RTT
 	pipeline := client.Pipeline()
 	for _, id := range ids {
 		key := KeyCommunityPostSetPrefix + id

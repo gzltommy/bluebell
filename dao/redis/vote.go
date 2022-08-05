@@ -36,14 +36,15 @@ v=-1时，有两种情况
 
 func VoteForPost(userID string, postID string, v float64) (err error) {
 	// 1.判断投票限制
-	// 去redis取帖子发布时间
+	// 去 redis 取帖子发布时间
 	postTime := client.ZScore(KeyPostTimeZSet, postID).Val()
 	if float64(time.Now().Unix())-postTime > OneWeekInSeconds { // Unix()时间戳
 		// 不允许投票了
 		return ErrorVoteTimeExpired
 	}
+
 	// 2、更新帖子的分数
-	// 2和3 需要放到一个pipeline事务中操作
+	// 2 和 3 需要放到一个 pipeline 事务中操作
 	// 判断是否已经投过票 查当前用户给当前帖子的投票记录
 	key := KeyPostVotedZSetPrefix + postID
 	ov := client.ZScore(key, userID).Val()
@@ -58,15 +59,18 @@ func VoteForPost(userID string, postID string, v float64) (err error) {
 	} else {
 		op = -1
 	}
-	diffAbs := math.Abs(ov - v)                                                        // 计算两次投票的差值
-	pipeline := client.TxPipeline()                                                    // 事务操作
+	diffAbs := math.Abs(ov - v) // 计算两次投票的差值
+
+	// 事务 pipeline 操作
+	pipeline := client.TxPipeline()
 	_, err = pipeline.ZIncrBy(KeyPostScoreZSet, VoteScore*diffAbs*op, postID).Result() // 更新分数
 	if ErrorVoteTimeExpired != nil {
 		return err
 	}
+
 	// 3、记录用户为该帖子投票的数据
 	if v == 0 {
-		_, err = client.ZRem(key, postID).Result()
+		_, err = pipeline.ZRem(key, postID).Result()
 	} else {
 		pipeline.ZAdd(key, redis.Z{ // 记录已投票
 			Score:  v, // 赞成票还是反对票

@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-func CommunityHandler(c *gin.Context) {
+func CommunityListHandler(c *gin.Context) {
 	// 查询到所有的社区(community_id,community_name)以列表的形式返回
 	communityList, err := logic.GetCommunityList()
 	if err != nil {

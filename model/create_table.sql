@@ -1,5 +1,4 @@
-drop table if exists `user`;
-create table user
+create table if not exists user
 (
     `id`          bigint(20)  not null auto_increment,
     `user_id`     bigint(20)  not null,
@@ -14,8 +13,7 @@ create table user
     unique key `idx_user_id` (`user_id`)
 );
 
-drop table if exists `post`;
-create table `post`
+create table if not exists `post`
 (
     `id`           bigint(20)    not null auto_increment,
     `post_id`      bigint(20)    not null comment '帖子id',
@@ -32,8 +30,7 @@ create table `post`
     key `idx_community_id` (`community_id`)
 );
 
-drop table if exists `community`;
-create table `community`
+create table if not exists `community`
 (
     `id`             int(11)          not null auto_increment,
     `community_id`   int(10) unsigned not null,
@@ -46,16 +43,12 @@ create table `community`
     unique key `idx_community_name` (`community_name`)
 );
 insert into `community`
-values ('1', '1', 'Go', 'Golang', '2016-11-01 08:10:10', '2016-11-01 08:10:10');
-insert into `community`
-values ('2', '2', 'leetcode', '刷题刷题刷题', '2020-01-01 08:00:00', '2020-01-01 08:00:00');
-insert into `community`
-values ('3', '3', 'PUBG', '大吉大利，今晚吃鸡。', '2018-08-07 08:30:00', '2018-08-07 08:30:00');
-insert into `community`
-values ('4', '4', 'LOL', '欢迎来到英雄联盟!', '2016-01-01 08:00:00', '2016-01-01 08:00:00');
+values ('1', '1', 'Go', 'Golang', '2016-11-01 08:10:10', '2016-11-01 08:10:10'),
+       ('2', '2', 'leetcode', '刷题刷题刷题', '2020-01-01 08:00:00', '2020-01-01 08:00:00'),
+       ('3', '3', 'PUBG', '大吉大利，今晚吃鸡。', '2018-08-07 08:30:00', '2018-08-07 08:30:00'),
+       ('4', '4', 'LOL', '欢迎来到英雄联盟!', '2016-01-01 08:00:00', '2016-01-01 08:00:00');
 
-drop table if exists `post`;
-create table `post`
+create table if not exists `post`
 (
     `id`           bigint(20)    not null auto_increment,
     `post_id`      bigint(20)    not null comment '帖子id',
@@ -72,9 +65,7 @@ create table `post`
     key `idx_community_id` (`community_id`)
 );
 
-
-drop table if exists `comment`;
-create table `comment`
+create table if not exists `comment`
 (
     `id`          bigint(20)          not null auto_increment,
     `comment_id`  bigint(20) unsigned not null,

@@ -24,6 +24,7 @@ func GetPostList(page, size int) (posts []*model.Post, err error) {
 // CreatePost 创建帖子
 func CreatePost(post *model.Post) (err error) {
 	sqlStr := `insert into post(post_id, title, content, author_id, community_id) values(?,?,?,?,?)`
+
 	_, err = db.Exec(sqlStr, post.PostID, post.Title, post.Content, post.AuthorId, post.CommunityID)
 	if err != nil {
 		zap.L().Error("insert post failed", zap.Error(err))
@@ -38,6 +39,7 @@ func GetPostByID(pid int64) (post *model.Post, err error) {
 	sqlStr := `select post_id, title, content, author_id, community_id, create_time
 	from post
 	where post_id = ?`
+
 	err = db.Get(post, sqlStr, pid)
 	if err == sql.ErrNoRows {
 		err = ErrorInvalidID
@@ -56,6 +58,7 @@ func GetPostListByIDs(ids []string) (postList []*model.Post, err error) {
 	from post
 	where post_id in (?)
 	order by FIND_IN_SET(post_id, ?)`
+
 	// 动态填充id
 	query, args, err := sqlx.In(sqlStr, ids, strings.Join(ids, ","))
 	if err != nil {

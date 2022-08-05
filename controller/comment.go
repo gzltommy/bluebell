@@ -10,7 +10,8 @@ import (
 	"go.uber.org/zap"
 )
 
-func CommentHandler(c *gin.Context) {
+// CreateCommentHandler 创建评论
+func CreateCommentHandler(c *gin.Context) {
 	var comment model.Comment
 	if err := c.BindJSON(&comment); err != nil {
 		fmt.Println(err)
@@ -25,10 +26,10 @@ func CommentHandler(c *gin.Context) {
 		render.ResponseError(c, render.CodeNotLogin)
 		return
 	}
-	comment.CommentID = uint64(snowflake.GenID()) // 生成帖子ID
+	comment.CommentID = uint64(snowflake.GenID()) // 生成评论ID
 	comment.AuthorID = userID
 
-	// 创建帖子
+	// 创建评论
 	if err := mysql.CreateComment(&comment); err != nil {
 		zap.L().Error("mysql.CreatePost(&post) failed", zap.Error(err))
 		render.ResponseError(c, render.CodeServerBusy)
@@ -37,6 +38,7 @@ func CommentHandler(c *gin.Context) {
 	render.ResponseSuccess(c, nil)
 }
 
+// CommentListHandler 评论列表
 func CommentListHandler(c *gin.Context) {
 	ids, ok := c.GetQueryArray("ids")
 	if !ok {
