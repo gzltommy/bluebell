@@ -11,6 +11,17 @@ import (
 	"strconv"
 )
 
+// CommunityListHandler 社区列表
+// @Summary 社区列表
+// @Description 社区列表
+// @Tags 社区业务接口
+// @Accept application/json
+// @Produce application/json
+// @Param Authorization header string true "Bearer 用户令牌"
+// @Param object query model.Community false "查询参数"
+// @Security ApiKeyAuth
+// @Success 200 {object} _ResponsePostList
+// @Router /community [get]
 func CommunityListHandler(c *gin.Context) {
 	// 查询到所有的社区(community_id,community_name)以列表的形式返回
 	communityList, err := logic.GetCommunityList()
@@ -22,6 +33,17 @@ func CommunityListHandler(c *gin.Context) {
 	render.ResponseSuccess(c, communityList)
 }
 
+// CommunityDetailHandler 社区详情
+// @Summary 社区详情
+// @Description 社区详情
+// @Tags 社区业务接口
+// @Accept application/json
+// @Produce application/json
+// @Param Authorization header string true "Bearer 用户令牌"
+// @Param object query communityId     path    int     true        "id"
+// @Security ApiKeyAuth
+// @Success 200 {object} _ResponsePostList
+// @Router /community/:id [get]
 func CommunityDetailHandler(c *gin.Context) {
 	// 1、获取社区ID
 	communityIdStr := c.Param("id")                               // 获取URL参数

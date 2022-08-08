@@ -11,6 +11,16 @@ import (
 )
 
 // CreateCommentHandler 创建评论
+// @summary 创建评论
+// @description 创建评论接口
+// @tags 评论
+// @accept application/json
+// @produce application/json
+// @param Authorization header string true "Bearer Token"
+// @param object query  model.Comment false "create param"
+// @security ApiKeyAuth
+// @success 200 {object} _RespComment
+// @router /comment [post]
 func CreateCommentHandler(c *gin.Context) {
 	var comment model.Comment
 	if err := c.BindJSON(&comment); err != nil {

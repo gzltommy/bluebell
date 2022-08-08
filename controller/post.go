@@ -25,6 +25,17 @@ func PostListHandler(c *gin.Context) {
 	render.ResponseSuccess(c, data)
 }
 
+// PostList2Handler 升级版帖子列表接口
+// @summary 升级版帖子列表接口
+// @description 可按社区按时间或分数排序查询帖子列表接口
+// @tags 帖子相关接口
+// @accept application/json
+// @produce application/json
+// @param Authorization header string false "Bearer 用户令牌"
+// @param object query model.ParamPostList2 false "查询参数"
+// @security ApiKeyAuth
+// @success 200 {object} _ResponsePostList
+// @router /posts2 [get]
 func PostList2Handler(c *gin.Context) {
 	// GET 请求参数(query string)： /api/v1/posts2?page=1&size=10&order=time
 	// 获取分页参数

@@ -19,16 +19,20 @@ import (
 	"time"
 )
 
-/*
- Go Web 开发较通用脚手架模板：
- 	1.加载配置
-	2.初始化日志
-	3.初始化 MySQL 连接
-	4.初始化 Redis 连接
-	5.注册路由
-	6.启动服务（优雅关机）
-*/
-
+// @title bluebell
+// @version 1.0
+// @description gin 框架开发 web 应用测试程序
+// @termsOfService http://swagger.io/terms/
+//
+// @contact.name author:zorro
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+//
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+//
+// @host 192.168.24.133:8081
+// @BasePath /api/v1/
 func main() {
 	cfgFile := flag.String("f", "./conf/config.yaml", "指定配置文件路径")
 
