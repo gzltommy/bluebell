@@ -7,8 +7,12 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
+	sf "github.com/swaggo/files"
+	gs "github.com/swaggo/gin-swagger"
 	"net/http"
 	"time"
+
+	"github.com/gin-contrib/pprof"
 )
 
 func initEngine(mode string) *gin.Engine {
@@ -53,6 +57,13 @@ func initEngine(mode string) *gin.Engine {
 			"msg":  "Method Not Allowed",
 		})
 	})
+
+	pprof.Register(e) // 注册 pprof 相关路由
+
+	// 注册 swagger
+	//r.GET("/swagger/*any", gs.WrapHandler(sf.Handler))
+	e.GET("/swagger/*any", gs.DisablingWrapHandler(sf.Handler, "NAME_OF_ENV_VARIABLE"))
+
 	e.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
