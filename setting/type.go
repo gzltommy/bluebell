@@ -8,6 +8,7 @@ type Config struct {
 	LimitConnection int    `mapstructure:"limit_connection"`
 	StartTime       string `mapstructure:"start_time"`
 	MachineID       int    `mapstructure:"machine_id"`
+	PProf           int    `mapstructure:"pprof"`
 
 	Auth  *AuthConfig  `mapstructure:"auth"`
 	Log   *LogConfig   `mapstructure:"log"`

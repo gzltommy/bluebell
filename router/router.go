@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter(mode string) *gin.Engine {
-	r := initEngine(mode)
+func SetupRouter() *gin.Engine {
+	r := initEngine()
 
 	v1 := r.Group("/api/v1")
 	auth := r.Group("/api/v1")
