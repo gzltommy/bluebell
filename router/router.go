@@ -5,17 +5,10 @@ import (
 	_ "bluebell/docs"
 	"bluebell/middleware"
 	"github.com/gin-gonic/gin"
-
-	sf "github.com/swaggo/files"
-	gs "github.com/swaggo/gin-swagger"
 )
 
 func SetupRouter(mode string) *gin.Engine {
 	r := initEngine(mode)
-
-	// 注册 swagger
-	//r.GET("/swagger/*any", gs.WrapHandler(sf.Handler))
-	r.GET("/swagger/*any", gs.DisablingWrapHandler(sf.Handler, "NAME_OF_ENV_VARIABLE"))
 
 	v1 := r.Group("/api/v1")
 	auth := r.Group("/api/v1")
