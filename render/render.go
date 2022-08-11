@@ -11,13 +11,13 @@ type RespJsonData struct {
 	Data interface{} `json:"data,omitempty"` // omitempty 当 data 为空时,不展示这个字段
 }
 
-func ResponseAbort(c *gin.Context, code int, msg ...string) {
+func ResponseAbort(c *gin.Context, code int, data interface{}) {
 	result := &RespJsonData{
 		Code: code,
-		Msg:  getCodeMsg(code, msg...),
-		Data: nil,
+		Msg:  http.StatusText(code),
+		Data: data,
 	}
-	c.AbortWithStatusJSON(http.StatusOK, result)
+	c.AbortWithStatusJSON(code, result)
 }
 
 func ResponseError(c *gin.Context, code int, msg ...string) {

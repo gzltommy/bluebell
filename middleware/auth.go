@@ -5,6 +5,7 @@ import (
 	"bluebell/pkg/jwt"
 	"bluebell/render"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"strings"
 )
 
@@ -14,21 +15,21 @@ func JwtAuthMiddleware() func(c *gin.Context) {
 		// 这里假设 Token 放在 Header 的 Authorization 中，并使用 Bearer 开头
 		authHeader := c.Request.Header.Get("Authorization")
 		if authHeader == "" {
-			render.ResponseAbort(c, render.CodeInvalidToken, "请求头缺少 Authorization")
+			render.ResponseAbort(c, http.StatusUnauthorized, "Authorization header not provided")
 			return
 		}
 
 		// 按空格分割
 		parts := strings.SplitN(authHeader, " ", 2)
 		if !(len(parts) == 2 && parts[0] == "Bearer") {
-			render.ResponseAbort(c, render.CodeInvalidToken, " Token 格式不对")
+			render.ResponseAbort(c, http.StatusUnauthorized, "Authorization Bearer is error")
 			return
 		}
 
 		// parts[1] 是获取到的 tokenString，我们使用之前定义好的解析 JWT 的函数来解析它
 		mc, err := jwt.ParseToken(parts[1])
 		if err != nil {
-			render.ResponseAbort(c, render.CodeInvalidToken)
+			render.ResponseAbort(c, http.StatusUnauthorized, "Authorization Bearer is error")
 			return
 		}
 
