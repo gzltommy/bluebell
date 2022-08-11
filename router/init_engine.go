@@ -6,13 +6,12 @@ import (
 	limit "github.com/aviddiviner/gin-limit"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	sf "github.com/swaggo/files"
 	gs "github.com/swaggo/gin-swagger"
 	"net/http"
 	"time"
-
-	"github.com/gin-contrib/pprof"
 )
 
 func initEngine(mode string) *gin.Engine {
@@ -20,6 +19,8 @@ func initEngine(mode string) *gin.Engine {
 		gin.SetMode(gin.ReleaseMode) // 设置成发布模式
 	}
 	e := gin.New()
+	pprof.Register(e) // 注册 pprof 相关路由
+
 	e.Use(logger.GinLogger(), logger.GinRecovery(true))
 	e.Use(cors.New(cors.Config{
 		AllowAllOrigins:  true,
@@ -57,8 +58,6 @@ func initEngine(mode string) *gin.Engine {
 			"msg":  "Method Not Allowed",
 		})
 	})
-
-	pprof.Register(e) // 注册 pprof 相关路由
 
 	// 注册 swagger
 	//r.GET("/swagger/*any", gs.WrapHandler(sf.Handler))
