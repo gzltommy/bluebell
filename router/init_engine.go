@@ -25,6 +25,8 @@ func initEngine() *gin.Engine {
 	}
 
 	e.Use(logger.GinLogger(), logger.GinRecovery(true))
+
+	//e.Use(cors.Default()) // cors.Default()，它默认允许所有跨域请求
 	e.Use(cors.New(cors.Config{
 		AllowAllOrigins:  true,
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"},
@@ -32,13 +34,15 @@ func initEngine() *gin.Engine {
 		AllowCredentials: false,
 		MaxAge:           12 * time.Hour,
 
-		//ExposeHeaders:          nil,
+		//ExposeHeaders:          []string{"Content-Length"},
 		//AllowWildcard:          false,
 		//AllowBrowserExtensions: false,
 		//AllowWebSockets:        false,
 		//AllowFiles:             false,
-		//AllowOrigins:           nil,
-		//AllowOriginFunc:        nil,
+		//AllowOrigins:           []string{"https://foo.com"},
+		//AllowOriginFunc: func(origin string) bool {
+		//	return origin == "https://github.com"
+		//},
 	}))
 
 	e.Use(gzip.Gzip(gzip.DefaultCompression))
