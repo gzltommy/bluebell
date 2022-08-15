@@ -10,7 +10,7 @@ import (
 func SetupRouter() *gin.Engine {
 	r := initEngine()
 
-	// 前端文件
+	// 前端页面文件
 	//r.LoadHTMLFiles("templates/index.html") // 加载 html
 	//r.Static("/static", "./static")         // 加载静态文件
 	//r.GET("/", func(context *gin.Context) {
