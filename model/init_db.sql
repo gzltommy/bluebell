@@ -1,3 +1,6 @@
+create database if not exists bluebell;
+
+
 create table if not exists user
 (
     `id`          bigint(20)  not null auto_increment,

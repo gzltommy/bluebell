@@ -21,16 +21,16 @@ log:
   max_backups: 7
 
 mysql:
-  host: "192.168.24.133"
+  host: "mysql" # 因为我们在项目中使用了 docker-compose 来部署服务，并且服务使用同一个 networks 参数，可以通过主机名（即 docker-compose 的服务名称）访问
   port: 3306
   user: "root"
   password: "123456"
-  dbname: "test"
+  dbname: "bluebell"
   max_open_conns: 200
   max_idle_conns: 50
 
 redis:
-  host: "192.168.24.133"
+  host: "redis"    # 因为我们在项目中使用了 docker-compose 来部署服务，并且服务使用同一个 networks 参数，可以通过主机名（即的服务名称）访问
   port: 6379
   password: ""
   db: 0
