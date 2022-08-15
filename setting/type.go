@@ -8,7 +8,7 @@ type Config struct {
 	LimitConnection int    `mapstructure:"limit_connection"`
 	StartTime       string `mapstructure:"start_time"`
 	MachineID       int    `mapstructure:"machine_id"`
-	PProf           int    `mapstructure:"pprof"`
+	PProf           int    `mapstructure:"PPROF"` // 推荐使用环境变量中的值
 
 	Auth  *AuthConfig  `mapstructure:"auth"`
 	Log   *LogConfig   `mapstructure:"log"`
