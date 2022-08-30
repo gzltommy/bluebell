@@ -7,7 +7,7 @@ import (
 
 type RespJsonData struct {
 	Code int         `json:"code"`
-	Msg  string      `json:"message"`
+	Msg  string      `json:"msg"`
 	Data interface{} `json:"data,omitempty"` // omitempty 当 data 为空时,不展示这个字段
 }
 

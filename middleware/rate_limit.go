@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func TokenBucketWithWaitMiddleware(r rate.Limit, b int, timeout time.Duration) gin.HandlerFunc {
+func TokenBucketWithWait(r rate.Limit, b int, timeout time.Duration) gin.HandlerFunc {
 	limiters := &sync.Map{}
 	return func(c *gin.Context) {
 		// 获取限速器
@@ -31,7 +31,7 @@ func TokenBucketWithWaitMiddleware(r rate.Limit, b int, timeout time.Duration) g
 	}
 }
 
-func TokenBucketWithAllowMiddleware(r rate.Limit, b int) gin.HandlerFunc {
+func TokenBucketWithAllow(r rate.Limit, b int) gin.HandlerFunc {
 	limiters := &sync.Map{}
 	return func(c *gin.Context) {
 		// 获取限速器
@@ -47,7 +47,7 @@ func TokenBucketWithAllowMiddleware(r rate.Limit, b int) gin.HandlerFunc {
 	}
 }
 
-func LeakBucketMiddleware(rps int) gin.HandlerFunc {
+func LeakBucket(rps int) gin.HandlerFunc {
 	limiters := &sync.Map{}
 	return func(c *gin.Context) {
 		// 获取限速器

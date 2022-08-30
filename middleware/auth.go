@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func JwtAuthMiddleware() func(c *gin.Context) {
+func JwtAuth() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		// 客户端携带 Token 有三种方式 1.放在请求头 2.放在请求体 3.放在 URI
 		// 这里假设 Token 放在 Header 的 Authorization 中，并使用 Bearer 开头

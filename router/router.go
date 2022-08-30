@@ -20,7 +20,7 @@ func SetupRouter() *gin.Engine {
 	// 接口
 	v1 := r.Group("/api/v1")
 	auth := r.Group("/api/v1")
-	auth.Use(middleware.JwtAuthMiddleware())
+	auth.Use(middleware.JwtAuth())
 	{
 		v1.POST("/user/signup", controller.SignupHandler)
 		v1.POST("/user/login", controller.LoginHandler)

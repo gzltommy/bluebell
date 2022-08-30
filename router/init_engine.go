@@ -1,7 +1,7 @@
 package router
 
 import (
-	"bluebell/logger"
+	"bluebell/middleware"
 	"bluebell/setting"
 	limit "github.com/aviddiviner/gin-limit"
 	"github.com/gin-contrib/cors"
@@ -24,7 +24,7 @@ func initEngine() *gin.Engine {
 		pprof.Register(e) // 注册 pprof 相关路由
 	}
 
-	e.Use(logger.GinLogger(), logger.GinRecovery(true))
+	e.Use(middleware.Logger(), middleware.Recovery(true))
 
 	//e.Use(cors.Default()) // cors.Default()，它默认允许所有跨域请求
 	e.Use(cors.New(cors.Config{
