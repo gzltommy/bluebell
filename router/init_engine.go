@@ -15,12 +15,12 @@ import (
 )
 
 func initEngine() *gin.Engine {
-	if setting.Cfg.Mode == gin.ReleaseMode {
+	if setting.Cfg().Mode == gin.ReleaseMode {
 		gin.SetMode(gin.ReleaseMode) // 设置成发布模式
 	}
 
 	e := gin.New()
-	if setting.Cfg.PProf > 0 {
+	if setting.Cfg().PProf > 0 {
 		pprof.Register(e) // 注册 pprof 相关路由
 	}
 
@@ -47,7 +47,7 @@ func initEngine() *gin.Engine {
 
 	e.Use(gzip.Gzip(gzip.DefaultCompression))
 
-	e.Use(limit.MaxAllowed(setting.Cfg.LimitConnection))
+	e.Use(limit.MaxAllowed(setting.Cfg().LimitConnection))
 
 	// 最大运行上传文件大小
 	e.MaxMultipartMemory = 1 << 30 // 1G
