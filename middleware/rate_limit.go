@@ -4,9 +4,9 @@ import (
 	"bluebell/render"
 	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 	"go.uber.org/ratelimit"
 	"golang.org/x/time/rate"
-	"net/http"
 	"sync"
 	"time"
 )
@@ -24,7 +24,7 @@ func TokenBucketWithWait(r rate.Limit, b int, timeout time.Duration) gin.Handler
 
 		if err := l.(*rate.Limiter).Wait(ctx); err != nil {
 			// 这里先不处理日志了，如果返回错误就直接 429
-			render.ResponseAbort(c, http.StatusTooManyRequests, "Too Many Requests")
+			render.ResponseAbort(c, render.CodeServerBusy, errors.New("Too Many Requests"))
 			return
 		}
 		c.Next()
@@ -40,7 +40,7 @@ func TokenBucketWithAllow(r rate.Limit, b int) gin.HandlerFunc {
 
 		if !l.(*rate.Limiter).Allow() {
 			// 这里先不处理日志了，如果返回错误就直接 429
-			render.ResponseAbort(c, http.StatusTooManyRequests, "Too Many Requests")
+			render.ResponseAbort(c, render.CodeServerBusy, errors.New("Too Many Requests"))
 			return
 		}
 		c.Next()

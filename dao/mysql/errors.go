@@ -1,6 +1,6 @@
 package mysql
 
-import "errors"
+import "github.com/pkg/errors"
 
 var (
 	ErrorUserExited    = errors.New("user exited")

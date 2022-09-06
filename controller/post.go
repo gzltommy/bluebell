@@ -5,21 +5,19 @@ import (
 	"bluebell/model"
 	"bluebell/render"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
+	"github.com/pkg/errors"
 	"strconv"
 )
 
 func PostListHandler(c *gin.Context) {
 	req := &model.ParamPostList{}
 	if err := c.ShouldBindQuery(req); err != nil {
-		zap.L().Error("PostListHandler with invalid param", zap.Error(err))
-		render.ResponseError(c, render.CodeErrParams)
+		render.ResponseError(c, render.CodeErrParams, errors.WithStack(err))
 	}
 	// 获取数据
 	data, err := logic.GetPostList(req)
 	if err != nil {
-		zap.L().Error("logic.GetPostList(req) fail", zap.Error(err))
-		render.ResponseError(c, render.CodeServerBusy)
+		render.ResponseError(c, render.CodeServerBusy, errors.WithMessagef(err, "logic.GetPostList(%+v)", req))
 		return
 	}
 	render.ResponseSuccess(c, data)
@@ -45,15 +43,14 @@ func PostList2Handler(c *gin.Context) {
 		Order: model.OrderTime, // magic string
 	}
 	if err := c.ShouldBindQuery(p); err != nil {
-		zap.L().Error("PostList2Handler with invalid params", zap.Error(err))
-		render.ResponseError(c, render.CodeErrParams)
+		render.ResponseError(c, render.CodeErrParams, errors.WithStack(err))
 		return
 	}
 
 	// 获取数据
 	data, err := logic.GetPostListNew(p) // 更新：合二为一
 	if err != nil {
-		render.ResponseError(c, render.CodeServerBusy)
+		render.ResponseError(c, render.CodeServerBusy, errors.WithMessagef(err, "logic.GetPostListNew(%+v)", p))
 		return
 	}
 	render.ResponseSuccess(c, data)
@@ -63,22 +60,19 @@ func CreatePostHandler(c *gin.Context) {
 	// 1、获取参数及校验参数
 	var req = &model.ParamCreatePost{}
 	if err := c.ShouldBindJSON(req); err != nil {
-		zap.L().Error("LoginHandler with invalid param", zap.Error(err))
-		render.ResponseError(c, render.CodeErrParams)
+		render.ResponseError(c, render.CodeErrParams, errors.WithStack(err))
 	}
 
 	userId, err := getAuthUserID(c)
 	if err != nil {
-		zap.L().Error("LoginHandler getAuthUserID fail", zap.Error(err))
-		render.ResponseError(c, render.CodeNotLogin)
+		render.ResponseError(c, render.CodeNotLogin, errors.WithMessage(err, "getAuthUserID fail"))
 	}
 	req.AuthorId = userId
 
 	// 2、创建帖子
 	err = logic.CreatePost(req)
 	if err != nil {
-		zap.L().Error("logic.CreatePost failed", zap.Error(err))
-		render.ResponseError(c, render.CodeServerBusy)
+		render.ResponseError(c, render.CodeServerBusy, errors.WithMessagef(err, "logic.CreatePost(%+v)", err))
 		return
 	}
 
@@ -91,15 +85,13 @@ func PostDetailHandler(c *gin.Context) {
 	postIdStr := c.Param("id")
 	postId, err := strconv.ParseInt(postIdStr, 10, 64)
 	if err != nil {
-		zap.L().Error("PostDetailHandler  strconv.ParseInt(postIdStr,10,64) fail", zap.Error(err))
-		render.ResponseError(c, render.CodeErrParams)
+		render.ResponseError(c, render.CodeErrParams, errors.Wrapf(err, "strconv.ParseInt(%s, 10, 64)", postIdStr))
 	}
 
 	// 2、根据 id 取出 id 帖子数据(查数据库)
 	post, err := logic.GetPostById(postId)
 	if err != nil {
-		zap.L().Error("logic.GetPost(postID) failed", zap.Error(err))
-		render.ResponseError(c, render.CodeServerBusy)
+		render.ResponseError(c, render.CodeServerBusy, errors.WithMessagef(err, "logic.GetPostById(%v)", postId))
 	}
 
 	// 3、返回响应

@@ -5,27 +5,25 @@ import (
 	"bluebell/model"
 	"bluebell/render"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
+	"github.com/pkg/errors"
 )
 
 func VoteHandler(c *gin.Context) {
 	// 参数校验,给哪个文章投什么票
 	vote := new(model.ParamVote)
 	if err := c.ShouldBindJSON(&vote); err != nil {
-		zap.L().Error("PostListHandler with invalid param", zap.Error(err))
-		render.ResponseError(c, render.CodeErrParams)
+		render.ResponseError(c, render.CodeErrParams, errors.WithStack(err))
 		return
 	}
 	// 获取当前请求用户的id
 	userID, err := getAuthUserID(c)
 	if err != nil {
-		render.ResponseError(c, render.CodeNotLogin)
+		render.ResponseError(c, render.CodeNotLogin, errors.WithMessage(err, "getAuthUserID fail"))
 		return
 	}
 	// 具体投票的业务逻辑
 	if err := logic.VoteForPost(userID, vote); err != nil {
-		zap.L().Error("logic.VoteForPost() failed", zap.Error(err))
-		render.ResponseError(c, render.CodeServerBusy)
+		render.ResponseError(c, render.CodeServerBusy, errors.WithMessagef(err, "logic.VoteForPost(%v,%+v)", userID, vote))
 		return
 	}
 	render.ResponseSuccess(c, nil)

@@ -10,7 +10,7 @@ type Error struct {
 func NewError(code int, msg ...string) *Error {
 	return &Error{
 		Code: 0,
-		Msg:  getCodeMsg(code, msg...),
+		Msg:  code2Msg(code, msg...),
 	}
 }
 
