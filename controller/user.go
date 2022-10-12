@@ -6,11 +6,9 @@ import (
 	"bluebell/model"
 	"bluebell/pkg/jwt"
 	"bluebell/render"
-	"bluebell/utils"
-	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
+	"github.com/pkg/errors"
 	"strings"
 )
 
@@ -18,19 +16,17 @@ func SignupHandler(c *gin.Context) {
 	// 1.参数校验
 	req := &model.ParamSignUp{}
 	if err := c.ShouldBindJSON(req); err != nil {
-		zap.L().Error("SignupHandler with invalid param", zap.Error(err))
-		render.ResponseError(c, render.CodeErrParams)
+		render.ResponseError(c, render.CodeErrParams, errors.WithStack(err))
 	}
 
 	// 2.逻辑处理
 	err := logic.SignUp(req)
 	if err != nil {
 		if errors.Is(err, mysql.ErrorUserExited) {
-			render.ResponseError(c, render.CodeUserExisted)
+			render.ResponseError(c, render.CodeUserExisted, errors.WithMessagef(err, "logic.SignUp(%+v)", req))
 			return
 		}
-		zap.L().Error("SignupHandler failed", zap.Error(err), zap.String("error code", utils.Err2Hash(err)))
-		render.ResponseError(c, render.CodeServerBusy, utils.Err2Hash(err))
+		render.ResponseError(c, render.CodeServerBusy, errors.WithMessagef(err, "logic.SignUp(%+v)", req))
 		return
 	}
 
@@ -42,8 +38,7 @@ func LoginHandler(c *gin.Context) {
 	// 1.参数校验
 	req := &model.ParamLogin{}
 	if err := c.ShouldBindJSON(req); err != nil {
-		zap.L().Error("LoginHandler with invalid param", zap.Error(err))
-		render.ResponseError(c, render.CodeErrParams)
+		render.ResponseError(c, render.CodeErrParams, errors.WithStack(err))
 	}
 
 	// 2.逻辑处理
@@ -51,14 +46,13 @@ func LoginHandler(c *gin.Context) {
 	if err != nil {
 		switch {
 		case errors.Is(err, mysql.ErrorUserNotExit):
-			render.ResponseError(c, render.CodeUserNotExit)
+			render.ResponseError(c, render.CodeUserNotExit, err)
 			return
 		case errors.Is(err, mysql.ErrorPasswordWrong):
-			render.ResponseError(c, render.CodePasswordWrong)
+			render.ResponseError(c, render.CodePasswordWrong, err)
 			return
 		}
-		zap.L().Error("LoginHandler failed", zap.Error(err), zap.String("error code", utils.Err2Hash(err)))
-		render.ResponseError(c, render.CodeServerBusy, utils.Err2Hash(err))
+		render.ResponseError(c, render.CodeServerBusy, err)
 		return
 	}
 
@@ -77,20 +71,19 @@ func RefreshTokenHandler(c *gin.Context) {
 	// 这里假设 Token 放在 Header 的 Authorization 中，并使用 Bearer 开头
 	authHeader := c.Request.Header.Get("Authorization")
 	if authHeader == "" {
-		render.ResponseError(c, render.CodeInvalidToken, "请求头缺少 Auth Token")
+		render.ResponseError(c, render.CodeInvalidToken, errors.New("请求头缺少 Auth Token"))
 		return
 	}
 	// 按空格分割
 	parts := strings.SplitN(authHeader, " ", 2)
 	if !(len(parts) == 2 && parts[0] == "Bearer") {
-		render.ResponseError(c, render.CodeInvalidToken, "Token 格式不对")
+		render.ResponseError(c, render.CodeInvalidToken, errors.New("Token 格式不对"))
 		return
 	}
 
 	aToken, rToken, err := jwt.RefreshToken(parts[1], rt)
 	if err != nil {
-		zap.L().Error("RefreshTokenHandler failed", zap.Error(err))
-		render.ResponseError(c, render.CodeServerBusy)
+		render.ResponseError(c, render.CodeServerBusy, errors.WithMessagef(err, "jwt.RefreshToken(%v, %v)", parts[1], rt))
 		return
 	}
 

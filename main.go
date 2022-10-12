@@ -44,25 +44,25 @@ func main() {
 	}
 
 	//2.初始化日志
-	if err := logger.Init(setting.Cfg.Log, setting.Cfg.Mode); err != nil {
+	if err := logger.Init(setting.Cfg().Log, setting.Cfg().Mode); err != nil {
 		panic(fmt.Errorf("init logger failed,err:%v \n", err))
 	}
 	defer zap.L().Sync()
 
 	//3.初始化 MySQL 连接
-	if err := mysql.Init(setting.Cfg.MySQL); err != nil {
+	if err := mysql.Init(setting.Cfg().MySQL); err != nil {
 		panic(fmt.Errorf("init mysql failed,err:%v \n", err))
 	}
 	defer mysql.Close()
 
 	//4.初始化 Redis 连接
-	if err := redis.Init(setting.Cfg.Redis); err != nil {
+	if err := redis.Init(setting.Cfg().Redis); err != nil {
 		panic(fmt.Errorf("init redis failed,err:%v \n", err))
 	}
 	defer redis.Close()
 
 	// 雪花算法生成分布式ID
-	if err := snowflake.Init(setting.Cfg.StartTime, setting.Cfg.MachineID); err != nil {
+	if err := snowflake.Init(setting.Cfg().StartTime, setting.Cfg().MachineID); err != nil {
 		panic(fmt.Sprintf("init snowflake failed, err:%v\n", err))
 		return
 	}
@@ -72,13 +72,13 @@ func main() {
 
 	//6.启动服务（优雅关机）
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%d", setting.Cfg.Port),
+		Addr:    fmt.Sprintf(":%d", setting.Cfg().Port),
 		Handler: r,
 	}
 
 	go func() {
 		// 开启一个 goroutine 启动服务
-		zap.L().Info("开始监听", zap.String("port", fmt.Sprintf(":%d", setting.Cfg.Port)))
+		zap.L().Info("开始监听", zap.String("port", fmt.Sprintf(":%d", setting.Cfg().Port)))
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("listen: %s\n", err)
 		}

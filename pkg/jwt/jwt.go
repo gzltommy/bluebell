@@ -35,11 +35,11 @@ func GenToken(userID uint64, username string) (aToken, rToken string, err error)
 			username, // 自定义字段
 			jwt.StandardClaims{ // JWT 规定的 7 个官方字段
 				ExpiresAt: time.Now().
-					Add(time.Duration(setting.Cfg.Auth.JwtExpire) * time.Second). // 过期时间
+					Add(time.Duration(setting.Cfg().Auth.JwtExpire) * time.Second). // 过期时间
 					Unix(),
-				Issuer: setting.Cfg.AppName, // 签发人
+				Issuer: setting.Cfg().AppName, // 签发人
 			},
-		}).SignedString([]byte(setting.Cfg.Auth.JwtSecret))
+		}).SignedString([]byte(setting.Cfg().Auth.JwtSecret))
 	if err != nil {
 		return "", "", err
 	}
@@ -49,8 +49,8 @@ func GenToken(userID uint64, username string) (aToken, rToken string, err error)
 		jwt.SigningMethodHS256,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 24 * 10).Unix(), // 过期时间
-			Issuer:    setting.Cfg.AppName,                        // 签发人
-		}).SignedString([]byte(setting.Cfg.Auth.JwtSecret))
+			Issuer:    setting.Cfg().AppName,                      // 签发人
+		}).SignedString([]byte(setting.Cfg().Auth.JwtSecret))
 	return
 }
 
@@ -64,11 +64,11 @@ func GenToken2(userID uint64, username string) (token string, err error) {
 			username, // 自定义字段
 			jwt.StandardClaims{ // JWT 规定的 7 个官方字段
 				ExpiresAt: time.Now().
-					Add(time.Duration(setting.Cfg.Auth.JwtExpire) * time.Second). // 过期时间
+					Add(time.Duration(setting.Cfg().Auth.JwtExpire) * time.Second). // 过期时间
 					Unix(),
-				Issuer: setting.Cfg.AppName, // 签发人
+				Issuer: setting.Cfg().AppName, // 签发人
 			},
-		}).SignedString([]byte(setting.Cfg.Auth.JwtSecret))
+		}).SignedString([]byte(setting.Cfg().Auth.JwtSecret))
 	return
 }
 
@@ -110,5 +110,5 @@ func keyFunc(t *jwt.Token) (interface{}, error) {
 	if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 		return nil, errors.New("token parse error")
 	}
-	return []byte(setting.Cfg.Auth.JwtSecret), nil
+	return []byte(setting.Cfg().Auth.JwtSecret), nil
 }

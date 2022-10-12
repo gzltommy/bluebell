@@ -5,9 +5,8 @@ import (
 	"bluebell/model"
 	"bluebell/pkg/snowflake"
 	"bluebell/render"
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
+	"github.com/pkg/errors"
 )
 
 // CreateCommentHandler 创建评论
@@ -24,16 +23,14 @@ import (
 func CreateCommentHandler(c *gin.Context) {
 	var comment model.Comment
 	if err := c.BindJSON(&comment); err != nil {
-		fmt.Println(err)
-		render.ResponseError(c, render.CodeErrParams)
+		render.ResponseError(c, render.CodeErrParams, errors.WithStack(err))
 		return
 	}
 
 	// 获取作者 ID，当前请求的 UserID
 	userID, err := getAuthUserID(c)
 	if err != nil {
-		zap.L().Error("GetCurrentUserID() failed", zap.Error(err))
-		render.ResponseError(c, render.CodeNotLogin)
+		render.ResponseError(c, render.CodeNotLogin, errors.WithMessage(err, "getAuthUserID fail"))
 		return
 	}
 	comment.CommentID = uint64(snowflake.GenID()) // 生成评论ID
@@ -41,8 +38,7 @@ func CreateCommentHandler(c *gin.Context) {
 
 	// 创建评论
 	if err := mysql.CreateComment(&comment); err != nil {
-		zap.L().Error("mysql.CreatePost(&post) failed", zap.Error(err))
-		render.ResponseError(c, render.CodeServerBusy)
+		render.ResponseError(c, render.CodeServerBusy, errors.WithMessagef(err, "CreateComment(%+v)", comment))
 		return
 	}
 	render.ResponseSuccess(c, nil)
@@ -52,12 +48,12 @@ func CreateCommentHandler(c *gin.Context) {
 func CommentListHandler(c *gin.Context) {
 	ids, ok := c.GetQueryArray("ids")
 	if !ok {
-		render.ResponseError(c, render.CodeErrParams)
+		render.ResponseError(c, render.CodeErrParams, errors.New("ids parameter not found"))
 		return
 	}
 	posts, err := mysql.GetCommentListByIDs(ids)
 	if err != nil {
-		render.ResponseError(c, render.CodeServerBusy)
+		render.ResponseError(c, render.CodeServerBusy, errors.WithMessagef(err, "GetCommentListByIDs(%v) fail", ids))
 		return
 	}
 	render.ResponseSuccess(c, posts)
