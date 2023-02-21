@@ -6,12 +6,12 @@ import (
 	"github.com/go-redis/redis"
 )
 
-// 声明一个全局的 client 变量
-var client *redis.Client
+// Client 声明一个全局的 Client 变量
+var Client *redis.Client
 
 // Init 初始化连接
 func Init(cfg *setting.RedisConfig) error {
-	client = redis.NewClient(&redis.Options{
+	Client = redis.NewClient(&redis.Options{
 		Addr: fmt.Sprintf("%s:%d",
 			cfg.Host,
 			cfg.Port,
@@ -21,7 +21,7 @@ func Init(cfg *setting.RedisConfig) error {
 		PoolSize: cfg.PoolSize,
 	})
 
-	_, err := client.Ping().Result()
+	_, err := Client.Ping().Result()
 	if err != nil {
 		return err
 	}
@@ -29,5 +29,5 @@ func Init(cfg *setting.RedisConfig) error {
 }
 
 func Close() {
-	_ = client.Close()
+	_ = Client.Close()
 }

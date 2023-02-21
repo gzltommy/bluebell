@@ -1,6 +1,7 @@
-package mysql
+package op
 
 import (
+	"bluebell/dao/mysql"
 	"bluebell/model"
 	"database/sql"
 	"go.uber.org/zap"
@@ -8,7 +9,7 @@ import (
 
 func GetCommunityList() (communityList []*model.Community, err error) {
 	sqlStr := "select community_id, community_name from community"
-	err = db.Select(&communityList, sqlStr)
+	err = mysql.DB.Select(&communityList, sqlStr)
 	if err == sql.ErrNoRows { // 查询为空
 		zap.L().Warn("there is no community in db")
 		err = nil
@@ -21,14 +22,14 @@ func GetCommunityByID(id uint64) (community *model.CommunityDetail, err error) {
 	sqlStr := `select community_id, community_name, introduction, create_time
 					from community
 				where community_id = ?`
-	err = db.Get(community, sqlStr, id)
+	err = mysql.DB.Get(community, sqlStr, id)
 	if err == sql.ErrNoRows { // 查询为空
-		err = ErrorInvalidID // 无效的ID
+		err = mysql.ErrorInvalidID // 无效的ID
 		return
 	}
 	if err != nil {
 		zap.L().Error("query community failed", zap.String("sql", sqlStr), zap.Error(err))
-		err = ErrorQueryFailed
+		err = mysql.ErrorQueryFailed
 	}
 	return community, err
 }
@@ -36,14 +37,14 @@ func GetCommunityByID(id uint64) (community *model.CommunityDetail, err error) {
 func GetCommunityNameByID(idStr string) (community *model.Community, err error) {
 	community = new(model.Community)
 	sqlStr := `select community_id, community_name	from community	where community_id = ?`
-	err = db.Get(community, sqlStr, idStr)
+	err = mysql.DB.Get(community, sqlStr, idStr)
 	if err == sql.ErrNoRows {
-		err = ErrorInvalidID
+		err = mysql.ErrorInvalidID
 		return
 	}
 	if err != nil {
 		zap.L().Error("query community failed", zap.String("sql", sqlStr), zap.Error(err))
-		err = ErrorQueryFailed
+		err = mysql.ErrorQueryFailed
 		return
 	}
 	return

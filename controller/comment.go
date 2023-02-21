@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"bluebell/dao/mysql"
+	model2 "bluebell/dao/mysql/op"
 	"bluebell/model"
 	"bluebell/pkg/snowflake"
 	"bluebell/render"
@@ -37,7 +37,7 @@ func CreateCommentHandler(c *gin.Context) {
 	comment.AuthorID = userID
 
 	// 创建评论
-	if err := mysql.CreateComment(&comment); err != nil {
+	if err := model2.CreateComment(&comment); err != nil {
 		render.ResponseError(c, render.CodeServerBusy, errors.WithMessagef(err, "CreateComment(%+v)", comment))
 		return
 	}
@@ -51,7 +51,7 @@ func CommentListHandler(c *gin.Context) {
 		render.ResponseError(c, render.CodeErrParams, errors.New("ids parameter not found"))
 		return
 	}
-	posts, err := mysql.GetCommentListByIDs(ids)
+	posts, err := model2.GetCommentListByIDs(ids)
 	if err != nil {
 		render.ResponseError(c, render.CodeServerBusy, errors.WithMessagef(err, "GetCommentListByIDs(%v) fail", ids))
 		return

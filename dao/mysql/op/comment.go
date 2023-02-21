@@ -1,6 +1,7 @@
-package mysql
+package op
 
 import (
+	"bluebell/dao/mysql"
 	"bluebell/model"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
@@ -11,10 +12,10 @@ func CreateComment(comment *model.Comment) (err error) {
 	comment_id, content, post_id, author_id, parent_id)
 	values(?,?,?,?,?)`
 
-	_, err = db.Exec(sqlStr, comment.CommentID, comment.Content, comment.PostID,
+	_, err = mysql.DB.Exec(sqlStr, comment.CommentID, comment.Content, comment.PostID,
 		comment.AuthorID, comment.ParentID)
 	if err != nil {
-		err = ErrorInsertFailed
+		err = mysql.ErrorInsertFailed
 		return
 	}
 	return
@@ -32,8 +33,8 @@ func GetCommentListByIDs(ids []string) (commentList []*model.Comment, err error)
 		return
 	}
 	// sqlx.In 返回带 `?` bindvar的查询语句, 我们使用 Rebind() 重新绑定它
-	query = db.Rebind(query)
-	err = db.Select(&commentList, query, args...)
+	query = mysql.DB.Rebind(query)
+	err = mysql.DB.Select(&commentList, query, args...)
 	if err != nil {
 		err = errors.WithStack(err)
 		return

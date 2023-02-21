@@ -1,6 +1,7 @@
-package redis
+package op
 
 import (
+	redis2 "bluebell/dao/redis"
 	"github.com/go-redis/redis"
 	"math"
 	"time"
@@ -37,21 +38,21 @@ v=-1时，有两种情况
 func VoteForPost(userID string, postID string, v float64) (err error) {
 	// 1.判断投票限制
 	// 去 redis 取帖子发布时间
-	postTime := client.ZScore(KeyPostTimeZSet, postID).Val()
+	postTime := redis2.Client.ZScore(redis2.KeyPostTimeZSet, postID).Val()
 	if float64(time.Now().Unix())-postTime > OneWeekInSeconds { // Unix()时间戳
 		// 不允许投票了
-		return ErrorVoteTimeExpired
+		return redis2.ErrorVoteTimeExpired
 	}
 
 	// 2、更新帖子的分数
 	// 2 和 3 需要放到一个 pipeline 事务中操作
 	// 判断是否已经投过票 查当前用户给当前帖子的投票记录
-	key := KeyPostVotedZSetPrefix + postID
-	ov := client.ZScore(key, userID).Val()
+	key := redis2.KeyPostVotedZSetPrefix + postID
+	ov := redis2.Client.ZScore(key, userID).Val()
 
 	// 更新：如果这一次投票的值和之前保存的值一致，就提示不允许重复投票
 	if v == ov {
-		return ErrVoteRepeated
+		return redis2.ErrVoteRepeated
 	}
 	var op float64
 	if v > ov {
@@ -62,9 +63,9 @@ func VoteForPost(userID string, postID string, v float64) (err error) {
 	diffAbs := math.Abs(ov - v) // 计算两次投票的差值
 
 	// 事务 pipeline 操作
-	pipeline := client.TxPipeline()
-	_, err = pipeline.ZIncrBy(KeyPostScoreZSet, VoteScore*diffAbs*op, postID).Result() // 更新分数
-	if ErrorVoteTimeExpired != nil {
+	pipeline := redis2.Client.TxPipeline()
+	_, err = pipeline.ZIncrBy(redis2.KeyPostScoreZSet, VoteScore*diffAbs*op, postID).Result() // 更新分数
+	if redis2.ErrorVoteTimeExpired != nil {
 		return err
 	}
 

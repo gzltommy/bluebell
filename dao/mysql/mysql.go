@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	db *sqlx.DB
+	DB *sqlx.DB
 )
 
 func Init(cfg *setting.MySQLConfig) error {
@@ -23,16 +23,16 @@ func Init(cfg *setting.MySQLConfig) error {
 
 	// 也可以使用 MustConnect 连接不成功就 panic
 	var err error
-	db, err = sqlx.Connect("mysql", dsn)
+	DB, err = sqlx.Connect("mysql", dsn)
 	if err != nil {
 		zap.L().Error("connect DB failed", zap.Error(err))
 		return err
 	}
-	db.SetMaxOpenConns(cfg.MaxOpenConns)
-	db.SetMaxIdleConns(cfg.MaxIdleConns)
+	DB.SetMaxOpenConns(cfg.MaxOpenConns)
+	DB.SetMaxIdleConns(cfg.MaxIdleConns)
 	return nil
 }
 
 func Close() {
-	_ = db.Close()
+	_ = DB.Close()
 }

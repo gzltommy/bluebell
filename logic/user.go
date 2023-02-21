@@ -1,7 +1,7 @@
 package logic
 
 import (
-	"bluebell/dao/mysql"
+	model2 "bluebell/dao/mysql/op"
 	"bluebell/model"
 	"bluebell/pkg/jwt"
 	"bluebell/pkg/snowflake"
@@ -10,7 +10,7 @@ import (
 
 func SignUp(p *model.ParamSignUp) error {
 	// 1. 查看用户是否存在
-	if err := mysql.CheckUserExist(p.Username); err != nil {
+	if err := model2.CheckUserExist(p.Username); err != nil {
 		return err
 	}
 
@@ -25,11 +25,11 @@ func SignUp(p *model.ParamSignUp) error {
 	}
 
 	// 3. 插入数据库
-	return mysql.InsertUser(&user)
+	return model2.InsertUser(&user)
 }
 
 func Login(p *model.ParamLogin) (user *model.User, err error) {
-	user, err = mysql.Login(p.UserName, utils.EncryptPassword([]byte(p.Password)))
+	user, err = model2.Login(p.UserName, utils.EncryptPassword([]byte(p.Password)))
 	if err != nil {
 		return
 	}
