@@ -15,6 +15,7 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/martinlindhe/base36 v1.1.1
+	github.com/pkg/errors v0.9.1
 	github.com/spf13/viper v1.12.0
 	github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a
 	github.com/swaggo/gin-swagger v1.5.1

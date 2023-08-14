@@ -1,10 +1,7 @@
 package main
 
 import (
-	"bluebell/dao/mysql"
-	"bluebell/dao/redis"
 	"bluebell/logger"
-	"bluebell/pkg/snowflake"
 	"bluebell/router"
 	"bluebell/setting"
 	"context"
@@ -49,23 +46,23 @@ func main() {
 	}
 	defer zap.L().Sync()
 
-	//3.初始化 MySQL 连接
-	if err := mysql.Init(setting.Cfg().MySQL); err != nil {
-		panic(fmt.Errorf("init mysql failed,err:%v \n", err))
-	}
-	defer mysql.Close()
-
-	//4.初始化 Redis 连接
-	if err := redis.Init(setting.Cfg().Redis); err != nil {
-		panic(fmt.Errorf("init redis failed,err:%v \n", err))
-	}
-	defer redis.Close()
-
-	// 雪花算法生成分布式ID
-	if err := snowflake.Init(setting.Cfg().StartTime, setting.Cfg().MachineID); err != nil {
-		panic(fmt.Sprintf("init snowflake failed, err:%v\n", err))
-		return
-	}
+	////3.初始化 MySQL 连接
+	//if err := mysql.Init(setting.Cfg().MySQL); err != nil {
+	//	panic(fmt.Errorf("init mysql failed,err:%v \n", err))
+	//}
+	//defer mysql.Close()
+	//
+	////4.初始化 Redis 连接
+	//if err := redis.Init(setting.Cfg().Redis); err != nil {
+	//	panic(fmt.Errorf("init redis failed,err:%v \n", err))
+	//}
+	//defer redis.Close()
+	//
+	//// 雪花算法生成分布式ID
+	//if err := snowflake.Init(setting.Cfg().StartTime, setting.Cfg().MachineID); err != nil {
+	//	panic(fmt.Sprintf("init snowflake failed, err:%v\n", err))
+	//	return
+	//}
 
 	// 注册路由
 	r := router.SetupRouter()

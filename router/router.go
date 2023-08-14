@@ -43,6 +43,9 @@ func SetupRouter() *gin.Engine {
 		auth.POST("/comment", controller.CreateCommentHandler)
 		v1.GET("/comment", controller.CommentListHandler)
 	}
+	{
+		v1.GET("/test", controller.TestGIN)
+	}
 
 	return r
 }

@@ -58,3 +58,8 @@ func CommentListHandler(c *gin.Context) {
 	}
 	render.ResponseSuccess(c, posts)
 }
+
+// TestGIN
+func TestGIN(c *gin.Context) {
+	render.ResponseSuccess(c, "ok")
+}

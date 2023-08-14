@@ -30,7 +30,7 @@ func CreatePost(postID, userID uint64, title, summary string, communityID uint64
 	}
 
 	// 事务 pipeline
-	pipeline := redis2.client.TxPipeline()
+	pipeline := redis2.Client.TxPipeline()
 	pipeline.ZAdd(votedKey, redis.Z{ // 作者默认投赞成票
 		Score:  1,
 		Member: userID,
@@ -55,7 +55,7 @@ func getIDsFormKey(key string, page, size int64) ([]string, error) {
 	start := (page - 1) * size
 	end := start + size - 1
 	// 3.ZREVRANGE 按照分数从大到小的顺序查询指定数量的元素
-	return redis2.client.ZRevRange(key, start, end).Result()
+	return redis2.Client.ZRevRange(key, start, end).Result()
 }
 
 func GetPostIDsInOrder(p *model.ParamPostList2) ([]string, error) {
@@ -79,7 +79,7 @@ func GetPostVoteData(ids []string) (data []int64, err error) {
 	//}
 
 	// 使用 pipeline 一次发送多条命令减少 RTT
-	pipeline := redis2.client.Pipeline()
+	pipeline := redis2.Client.Pipeline()
 	for _, id := range ids {
 		key := redis2.KeyCommunityPostSetPrefix + id
 		pipeline.ZCount(key, "1", "1")
@@ -111,9 +111,9 @@ func GetCommunityPostIDsInOrder(p *model.ParamPostList2) ([]string, error) {
 
 	// 利用缓存key减少zinterstore执行的次数 缓存key
 	key := orderkey + strconv.Itoa(int(p.CommunityID))
-	if redis2.client.Exists(key).Val() < 1 {
+	if redis2.Client.Exists(key).Val() < 1 {
 		// 不存在，需要计算
-		pipeline := redis2.client.Pipeline()
+		pipeline := redis2.Client.Pipeline()
 		pipeline.ZInterStore(key, redis.ZStore{
 			Aggregate: "MAX", // 将两个zset函数聚合的时候 求最大值
 		}, cKey, orderkey) // zinterstore 计算
