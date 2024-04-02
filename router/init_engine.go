@@ -24,6 +24,10 @@ func initEngine() *gin.Engine {
 		pprof.Register(e) // 注册 pprof 相关路由
 	}
 
+	e.Use(gzip.Gzip(gzip.DefaultCompression, gzip.WithExcludedPaths([]string{
+		"/api/v1/test",
+	})))
+
 	e.Use(middleware.Logger(), middleware.Recovery(true))
 
 	//e.Use(cors.Default()) // cors.Default()，它默认允许所有跨域请求

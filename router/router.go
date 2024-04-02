@@ -22,6 +22,9 @@ func SetupRouter() *gin.Engine {
 	auth := r.Group("/api/v1")
 	auth.Use(middleware.JwtAuth())
 	{
+		v1.GET("/test", controller.Test)
+	}
+	{
 		v1.POST("/user/signup", controller.SignupHandler)
 		v1.POST("/user/login", controller.LoginHandler)
 		auth.GET("/user/refresh-token", controller.RefreshTokenHandler)
@@ -42,9 +45,6 @@ func SetupRouter() *gin.Engine {
 	{
 		auth.POST("/comment", controller.CreateCommentHandler)
 		v1.GET("/comment", controller.CommentListHandler)
-	}
-	{
-		v1.GET("/test", controller.TestGIN)
 	}
 
 	return r

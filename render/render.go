@@ -55,7 +55,8 @@ func errorMsg(c *gin.Context, code int, err error) string {
 		zap.String("request", string(httpRequest)),
 		zap.String("stack", string(debug.Stack())),
 	)
-	return code2Msg(code) + fmt.Sprintf("error_code:%s", eCode)
+	//return code2Msg(code) + fmt.Sprintf("error_code:%s", eCode)
+	return code2Msg(code) + fmt.Sprintf("error:%v", err)
 }
 
 func code2Msg(code int) string {
