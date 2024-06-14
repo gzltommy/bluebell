@@ -1,4 +1,4 @@
-FROM golang AS builder
+FROM golang:1.19 AS builder
 
 LABEL maintainer="zorro" \
       version="1.0.0"
